@@ -1,0 +1,7 @@
+﻿services:
+  tasktracker.cli:
+    image: tasktracker.cli
+    build:
+      context: .
+      dockerfile: TaskTracker.CLI/Dockerfile
+
