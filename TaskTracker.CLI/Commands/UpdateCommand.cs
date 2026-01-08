@@ -7,9 +7,9 @@ public class UpdateCommand
 {
     public static int Execute(string[] args)
     {
-        if (args.Length == 0)
+        if (args.Length < 2)
         {
-            Console.Error.WriteLine("Error: id is empty.");
+            Console.Error.WriteLine("Error: missing arguments.");
             Console.WriteLine("Usage: task-cli update <id> <description>");
             return 1;
         }

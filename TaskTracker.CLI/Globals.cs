@@ -11,9 +11,14 @@ public static class Globals
 
     private static string GetBaseDirectory()
     {
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            return Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+        string path = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "task-tracker-cli"
+        );
 
-        return Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        if (!Directory.Exists(path))
+            Directory.CreateDirectory(path);
+
+        return path;
     }
 }

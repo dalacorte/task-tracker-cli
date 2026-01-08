@@ -8,13 +8,18 @@ public class ListCommand
 {
     public static int Execute(string[] args)
     {
-        StatusEnum? status = args[0] switch
+        StatusEnum? status = null;
+
+        if (args.Length > 0)
         {
-            "done" => StatusEnum.Done,
-            "todo" => StatusEnum.Todo,
-            "in-progress" => StatusEnum.InProgress,
-            _ => null
-        };
+            status = args[0] switch
+            {
+                "done" => StatusEnum.Done,
+                "todo" => StatusEnum.Todo,
+                "in-progress" => StatusEnum.InProgress,
+                _ => null
+            };
+        }
 
         List<Task> tasks = Process(status);
 

@@ -2,10 +2,9 @@
 using TaskTracker.CLI.Commands;
 
 if (!File.Exists(Globals.TASK_FILE_LOCATION))
-    using (File.Create(Globals.TASK_FILE_LOCATION))
-    {
-        ;
-    }
+{
+    File.WriteAllText(Globals.TASK_FILE_LOCATION, "[]");
+}
 
 if (args.Length == 0)
 {
