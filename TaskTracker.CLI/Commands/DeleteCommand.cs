@@ -1,4 +1,4 @@
-using System.Text.Json;
+using TaskTracker.CLI.Commands.Helpers;
 using Task = TaskTracker.CLI.Entities.Task;
 
 namespace TaskTracker.CLI.Commands;
@@ -33,35 +33,14 @@ public class DeleteCommand
         if (id <= 0)
             throw new ArgumentException("Invalid id", nameof(Process));
 
-        List<Task> tasks;
-
-        if (File.Exists(Globals.TASK_FILE_LOCATION))
-        {
-            string json = File.ReadAllText(Globals.TASK_FILE_LOCATION);
-
-            tasks = string.IsNullOrWhiteSpace(json)
-                ? new List<Task>()
-                : JsonSerializer.Deserialize<List<Task>>(json)
-                  ?? new List<Task>();
-        }
-        else
-        {
-            tasks = new List<Task>();
-        }
-
-        Task? task = tasks.FirstOrDefault(t => t.Id == id);
+        List<Task> tasks = FileHelper.LoadTasks();
+        Task? task = FileHelper.FindTaskById(tasks, id);
 
         if (task is null)
             throw new ArgumentException("Task not found", nameof(Process));
 
         tasks.Remove(task);
-
-        string outputJson = JsonSerializer.Serialize(
-            tasks,
-            new JsonSerializerOptions { WriteIndented = true }
-        );
-
-        File.WriteAllText(Globals.TASK_FILE_LOCATION, outputJson);
+        FileHelper.SaveTasks(tasks);
 
         return task;
     }

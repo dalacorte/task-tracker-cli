@@ -1,4 +1,4 @@
-using System.Text.Json;
+using TaskTracker.CLI.Commands.Helpers;
 using TaskTracker.CLI.Entities;
 using Task = TaskTracker.CLI.Entities.Task;
 
@@ -32,21 +32,7 @@ public class ListCommand
 
     private static List<Task> Process(StatusEnum? status = null)
     {
-        List<Task> tasks;
-
-        if (File.Exists(Globals.TASK_FILE_LOCATION))
-        {
-            string json = File.ReadAllText(Globals.TASK_FILE_LOCATION);
-
-            tasks = string.IsNullOrWhiteSpace(json)
-                ? new List<Task>()
-                : JsonSerializer.Deserialize<List<Task>>(json)
-                  ?? new List<Task>();
-        }
-        else
-        {
-            tasks = new List<Task>();
-        }
+        List<Task> tasks = FileHelper.LoadTasks();
 
         if (status is not null)
             tasks = tasks.Where(x => x.Status == status).ToList();

@@ -1,4 +1,4 @@
-using System.Text.Json;
+using TaskTracker.CLI.Commands.Helpers;
 using Task = TaskTracker.CLI.Entities.Task;
 
 namespace TaskTracker.CLI.Commands;
@@ -28,25 +28,8 @@ public class AddCommand
         if (string.IsNullOrWhiteSpace(description))
             throw new ArgumentException("Description cannot be empty", nameof(Process));
 
-        List<Task> tasks;
-
-        if (File.Exists(Globals.TASK_FILE_LOCATION))
-        {
-            string json = File.ReadAllText(Globals.TASK_FILE_LOCATION);
-
-            tasks = string.IsNullOrWhiteSpace(json)
-                ? new List<Task>()
-                : JsonSerializer.Deserialize<List<Task>>(json)
-                  ?? new List<Task>();
-        }
-        else
-        {
-            tasks = new List<Task>();
-        }
-
-        int nextId = tasks.Count == 0
-            ? 1
-            : tasks.Max(t => t.Id) + 1;
+        List<Task> tasks = FileHelper.LoadTasks();
+        int nextId = FileHelper.GetNextId(tasks);
 
         Task newTask = new(description)
         {
@@ -54,13 +37,7 @@ public class AddCommand
         };
 
         tasks.Add(newTask);
-
-        string outputJson = JsonSerializer.Serialize(
-            tasks,
-            new JsonSerializerOptions { WriteIndented = true }
-        );
-
-        File.WriteAllText(Globals.TASK_FILE_LOCATION, outputJson);
+        FileHelper.SaveTasks(tasks);
 
         return newTask;
     }
